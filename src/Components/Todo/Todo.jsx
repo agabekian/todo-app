@@ -5,7 +5,6 @@ import { v4 as uuid } from 'uuid';
 import { Input, Button, Text, SegmentedControl, Card, Title } from '@mantine/core'; // Import Mantine components
 import '@mantine/core/styles.css';
 
-
 const Todo = () => {
     const settings = useContext(SettingsContext);
     const [defaultValues] = useState({
@@ -13,6 +12,7 @@ const Todo = () => {
     });
     const [list, setList] = useState([]);
     const [incomplete, setIncomplete] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
     const { handleChange, handleSubmit } = useForm(addItem, defaultValues);
     const itemsToShow = settings.itemsToShow; // var to control number of items to display
 
@@ -23,20 +23,15 @@ const Todo = () => {
         setList([...list, item]);
     }
 
-    // function deleteItem(id) {
-    //     const items = list.filter(item => item.id !== id);
-    //     setList(items);
-    // }
-
     function toggleComplete(id) {
-        const items = list.map(item => {
+        const updatedList = list.map(item => {
             if (item.id === id) {
                 item.complete = !item.complete;
             }
             return item;
         });
 
-        setList(items);
+        setList(updatedList);
     }
 
     useEffect(() => {
@@ -44,6 +39,12 @@ const Todo = () => {
         setIncomplete(incompleteCount);
         document.title = `To Do List: ${incomplete}`;
     }, [list]);
+
+    const handleLoadMore = () => {
+        setCurrentPage(currentPage + 1);
+    };
+
+    const visibleItems = list.slice(0, currentPage * itemsToShow);
 
     return (
         <>
@@ -71,7 +72,7 @@ const Todo = () => {
                 <Button type="submit">Add Item</Button>
             </form>
 
-            {list.slice(0, itemsToShow).map(item => (
+            {visibleItems.map(item => (
                 settings.hideCompleted && item.complete
                     ? <></>
                     : <Card key={item.id} shadow="xs" style={{ marginBottom: '16px' }}>
@@ -81,6 +82,12 @@ const Todo = () => {
                         <Button onClick={() => toggleComplete(item.id)} variant={item.complete ? 'light' : 'outline'}>Complete</Button>
                     </Card>
             ))}
+
+            {list.length > currentPage * itemsToShow &&
+                <div style={{ textAlign: 'center', marginTop: '16px' }}>
+                    <Button onClick={handleLoadMore}>Load More</Button>
+                </div>
+            }
         </>
     );
 };
