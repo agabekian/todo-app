@@ -1,0 +1,60 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Todo Component > renders the component and matches the snapshot 1`] = `
+<DocumentFragment>
+   
+  <header
+    data-testid="todo-header"
+  >
+    <h1
+      data-testid="todo-h1"
+    >
+      To Do List: 0 items pending
+    </h1>
+  </header>
+  <form>
+    <h2>
+      Add To Do Item
+    </h2>
+    <label>
+      <span>
+        To Do Item
+      </span>
+      <input
+        name="text"
+        placeholder="Item Details"
+        type="text"
+      />
+    </label>
+    <label>
+      <span>
+        Assigned To
+      </span>
+      <input
+        name="assignee"
+        placeholder="Assignee Name"
+        type="text"
+      />
+    </label>
+    <label>
+      <span>
+        Difficulty
+      </span>
+      <input
+        max="5"
+        min="1"
+        name="difficulty"
+        type="range"
+        value="4"
+      />
+    </label>
+    <label>
+      <button
+        type="submit"
+      >
+        Add Item
+      </button>
+    </label>
+  </form>
+</DocumentFragment>
+`;
