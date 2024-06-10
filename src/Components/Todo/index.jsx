@@ -1,93 +1,98 @@
-import React, { useEffect, useState } from 'react';
-import useForm from '../../hooks/form';
+import React, {useEffect, useState, useContext} from 'react';
 
-import { v4 as uuid } from 'uuid';
+import {SettingsContext} from '/src/context/Settings.jsx';
+
+import useForm from '../../hooks/form';
+import {v4 as uuid} from 'uuid';
 
 const Todo = () => {
-
-  const [defaultValues] = useState({
-    difficulty: 4,
-  });
-  const [list, setList] = useState([]);
-  const [incomplete, setIncomplete] = useState([]);
-  const { handleChange, handleSubmit } = useForm(addItem, defaultValues);
-
-  function addItem(item) {
-    item.id = uuid();
-    item.complete = false;
-    console.log(item);
-    setList([...list, item]);
-  }
-
-  function deleteItem(id) {
-    const items = list.filter( item => item.id !== id );
-    setList(items);
-  }
-
-  function toggleComplete(id) {
-
-    const items = list.map( item => {
-      if ( item.id === id ) {
-        item.complete = ! item.complete;
-      }
-      return item;
+    const settings = useContext(SettingsContext);
+    const [defaultValues] = useState({
+        difficulty: 4,
     });
+    const [list, setList] = useState([]);
+    const [incomplete, setIncomplete] = useState([]);
+    const {handleChange, handleSubmit} = useForm(addItem, defaultValues);
+    const itemsToShow = settings.itemsToShow; // var to control number of items to display
 
-    setList(items);
+    function addItem(item) {
+        item.id = uuid();
+        item.complete = false;
+        console.log(item);
+        setList([...list, item]);
+    }
 
-  }
+    function deleteItem(id) {
+        const items = list.filter(item => item.id !== id);
+        setList(items);
+    }
 
-  useEffect(() => {
-    let incompleteCount = list.filter(item => !item.complete).length;
-    setIncomplete(incompleteCount);
-    document.title = `To Do List: ${incomplete}`;
-    // linter will want 'incomplete' added to dependency array unnecessarily. 
-    // disable code used to avoid linter warning 
-    // eslint-disable-next-line react-hooks/exhaustive-deps 
-  }, [list]);  
+    function toggleComplete(id) {
+        const items = list.map(item => {
+            if (item.id === id) {
+                item.complete = !item.complete;
+            }
+            return item;
+        });
 
-  return (
-    <>
-      <header data-testid="todo-header">
-        <h1 data-testid="todo-h1">To Do List: {incomplete} items pending</h1>
-      </header>
+        setList(items);
+    }
 
-      <form onSubmit={handleSubmit}>
+    useEffect(() => {
+        let incompleteCount = list.filter(item => !item.complete).length;
+        setIncomplete(incompleteCount);
+        document.title = `To Do List: ${incomplete}`;
+        // linter will want 'incomplete' added to dependency array unnecessarily.
+        // disable code used to avoid linter warning
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [list]);
 
-        <h2>Add To Do Item</h2>
+    return (
+        <>
+            <header data-testid="todo-header">
+                <h1 data-testid="todo-h1">To Do List: {incomplete} items pending</h1>
+            </header>
 
-        <label>
-          <span>To Do Item</span>
-          <input onChange={handleChange} name="text" type="text" placeholder="Item Details" />
-        </label>
+            <form onSubmit={handleSubmit}>
 
-        <label>
-          <span>Assigned To</span>
-          <input onChange={handleChange} name="assignee" type="text" placeholder="Assignee Name" />
-        </label>
+                <h2>Add To Do Item</h2>
 
-        <label>
-          <span>Difficulty</span>
-          <input onChange={handleChange} defaultValue={defaultValues.difficulty} type="range" min={1} max={5} name="difficulty" />
-        </label>
+                <label>
+                    <span>To Do Item</span>
+                    <input onChange={handleChange} name="text" type="text" placeholder="Item Details"/>
+                </label>
 
-        <label>
-          <button type="submit">Add Item</button>
-        </label>
-      </form>
+                <label>
+                    <span>Assigned To</span>
+                    <input onChange={handleChange} name="assignee" type="text" placeholder="Assignee Name"/>
+                </label>
 
-      {list.map(item => (
-        <div key={item.id}>
-          <p>{item.text}</p>
-          <p><small>Assigned to: {item.assignee}</small></p>
-          <p><small>Difficulty: {item.difficulty}</small></p>
-          <div onClick={() => toggleComplete(item.id)}>Complete: {item.complete.toString()}</div>
-          <hr />
-        </div>
-      ))}
+                <label>
+                    <span>Difficulty</span>
+                    <input onChange={handleChange} defaultValue={defaultValues.difficulty} type="range" min={1} max={5}
+                           name="difficulty"/>
+                </label>
 
-    </>
-  );
+                <label>
+                    <button type="submit">Add Item</button>
+                </label>
+            </form>
+
+            {list.slice(0, itemsToShow).map(item => (
+                settings.hideCompleted && item.complete
+                    ? <></> :
+                    <div key={item.id}>
+                        <p>{item.text}</p>
+                        <p><small>Assigned to: {item.assignee}</small></p>
+                        <p><small>Difficulty: {item.difficulty}</small></p>
+                        <div onClick={() => toggleComplete(item.id)}>Complete: {item.complete.toString()}</div>
+                        <hr/>
+                    </div>
+
+            ))}
+
+        </>
+    );
 };
 
 export default Todo;
