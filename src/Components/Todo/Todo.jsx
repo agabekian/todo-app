@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { SettingsContext } from '/src/context/Settings.jsx';
 import useForm from '../../hooks/form';
 import { v4 as uuid } from 'uuid';
@@ -12,7 +12,7 @@ const Todo = () => {
     });
     const [list, setList] = useState([]);
     const [incomplete, setIncomplete] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
+    const [currentPage, setCurrentPage] = useState(1); // for pagination
     const { handleChange, handleSubmit } = useForm(addItem, defaultValues);
     const itemsToShow = settings.itemsToShow; // var to control number of items to display
 
@@ -40,11 +40,10 @@ const Todo = () => {
         document.title = `To Do List: ${incomplete}`;
     }, [list]);
 
-    const handleLoadMore = () => {
-        setCurrentPage(currentPage + 1);
-    };
+    const handleNextPage = () => setCurrentPage(prevPage => prevPage + 1);
+    const handlePrevPage = () => setCurrentPage(prevPage => Math.max(prevPage - 1, 1));
 
-    const visibleItems = list.slice(0, currentPage * itemsToShow);
+    const visibleItems = list.slice((currentPage - 1) * itemsToShow, currentPage * itemsToShow);
 
     return (
         <>
@@ -73,7 +72,7 @@ const Todo = () => {
             </form>
 
             {visibleItems.map(item => (
-                settings.hideCompleted && item.complete
+                settings.hideCompleted && item.complete // hide task if completed
                     ? <></>
                     : <Card key={item.id} shadow="xs" style={{ marginBottom: '16px' }}>
                         <Text>{item.text}</Text>
@@ -83,11 +82,10 @@ const Todo = () => {
                     </Card>
             ))}
 
-            {list.length > currentPage * itemsToShow &&
-                <div style={{ textAlign: 'center', marginTop: '16px' }}>
-                    <Button onClick={handleLoadMore}>Load More</Button>
-                </div>
-            }
+            <div style={{ textAlign: 'center', marginTop: '16px' }}>
+                {currentPage > 1 && <Button onClick={handlePrevPage}>Prev Page</Button>}
+                {list.length > currentPage * itemsToShow && <Button onClick={handleNextPage}>Next Page</Button>}
+            </div>
         </>
     );
 };
