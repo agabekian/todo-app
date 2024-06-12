@@ -1,7 +1,7 @@
 ## todo-app-auth
 
  **author**: Agabekian
- / lab33
+ / lab33/ 6.12.24
 * Admin: full access including  `DELETE` button.
 * Writer can create tasks.
 * Editor can update and create(?)
