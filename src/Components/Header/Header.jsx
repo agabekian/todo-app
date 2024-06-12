@@ -1,12 +1,13 @@
-import {Title} from "@mantine/core";
+import {Link} from 'react-router-dom';
+import {Button} from '@mantine/core';
 
-const Header = (props) => {
+const Header = () => {
     return (
-        <header>
-            <Title order={1} align="center">To Do List: {props.openItems} items pending</Title>
-        </header>
-    )
-}
-
+        <div style={{backgroundColor: '#6187bd', padding: '16px'}}>
+            <Button component={Link} to="/" color="white" variant="light" size="xl">Home</Button>
+            <Button component={Link} to="/settings" color="white" variant="light" size="xl">Settings</Button>
+        </div>
+    );
+};
 
 export default Header;
