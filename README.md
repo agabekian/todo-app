@@ -1,9 +1,9 @@
-## todo-app 
+## todo-app-auth
 
  **author**: Agabekian
- / lab31
+ / lab33
 #### setup:
-`npm install uuid mantine`
+`npm install uuid mantine react-if react-cookies jwt-decode`
 ####  test setup 
 `npm install vitest jsdom @testing-library/react @testing-library/jest-dom --save-dev`
 

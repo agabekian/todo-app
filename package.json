@@ -15,8 +15,11 @@
     "@emotion/styled": "^11.11.5",
     "@mantine/core": "^7.10.1",
     "@mantine/hooks": "^7.10.1",
+    "jwt-decode": "^4.0.0",
     "react": "^18.2.0",
+    "react-cookies": "^0.1.1",
     "react-dom": "^18.2.0",
+    "react-if": "^4.1.5",
     "react-router-dom": "^6.23.1",
     "sass": "^1.77.4",
     "uuid": "^10.0.0"

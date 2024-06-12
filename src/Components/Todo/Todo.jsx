@@ -6,6 +6,7 @@ import {Container, Group, Pagination} from '@mantine/core';
 import '@mantine/core/styles.css';
 import Form from "../Form/Form.jsx";
 import TaskCard from "../TaskCard.jsx";
+import Auth from "../auth/auth.jsx";
 
 
 const Todo = () => {
@@ -39,7 +40,7 @@ const Todo = () => {
 
 
     function deleteItem(id) {
-        const items = list.filter( item => item.id !== id );
+        const items = list.filter(item => item.id !== id);
         setList(items);
     }
 
@@ -53,17 +54,18 @@ const Todo = () => {
 
 
     return (
-        <Container size="xl" style={{ padding: '2rem' }}>
+        <Container size="xl" style={{padding: '2rem'}}>
             <p>{incomplete}</p>
             <Group position="apart" align="flex-start" noWrap>
-            <Form handleChange={handleChange}
-                  handleSubmit={handleSubmit}
-                  difficulty={defaultValues.difficulty}/>
-
-            <TaskCard list={displayList}
-                      toggleComplete={toggleComplete}
-                      deleteItem={deleteItem} />
-                </Group>
+                <Auth capability="create">
+                    <Form handleChange={handleChange}
+                          handleSubmit={handleSubmit}
+                          difficulty={defaultValues.difficulty}/>
+                </Auth>
+                <TaskCard list={displayList}
+                          toggleComplete={toggleComplete}
+                          deleteItem={deleteItem}/>
+            </Group>
 
             <Pagination
                 style={{position: 'fixed', bottom: '20px', right: '20px', zIndex: '100'}}
