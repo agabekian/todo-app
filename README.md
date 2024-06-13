@@ -14,3 +14,7 @@
 #### run 
 `npm run dev`
 #### UML![uml.png](uml.png)
+###### Notes:
+6.13.24 `Local Storage` added.
+
+(Thanks Brandon, indeed it was needed if using the react-router)
