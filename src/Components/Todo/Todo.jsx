@@ -50,10 +50,14 @@ const Todo = () => {
     }
 
     useEffect(() => {
-        // Calculate filtered list based on hideCompleted state
         const filteredList = hideCompleted ? list.filter(item => !item.complete) : list;
-
         const totalPages = Math.ceil(filteredList.length / itemsToShow);
+
+        // Consider resetting currentPage to 1 if hideCompleted changes
+        if (hideCompleted && currentPage > totalPages) {
+            setCurrentPage(1);
+        }
+
         setDisplayList(filteredList.slice((currentPage - 1) * itemsToShow, currentPage * itemsToShow));
 
         setIncomplete(filteredList.filter(item => !item.complete).length);
