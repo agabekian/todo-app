@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { SettingsContext } from '/src/context/Settings.jsx';
+import {useEffect, useState, useContext} from 'react';
+import {SettingsContext} from '/src/context/Settings.jsx';
 import useForm from '../../hooks/form';
-import { v4 as uuid } from 'uuid';
-import { Container, Group, Pagination } from '@mantine/core';
+import {v4 as uuid} from 'uuid';
+import {Container, Group, Pagination} from '@mantine/core';
 import '@mantine/core/styles.css';
 import Form from "../Form/Form.jsx";
 import TaskCard from "../TaskCard.jsx";
@@ -15,7 +15,7 @@ const Todo = () => {
     });
     const [displayList, setDisplayList] = useState([]);
     const [incomplete, setIncomplete] = useState([]);
-    const { handleChange, handleSubmit } = useForm(addItem, defaultValues);
+    const {handleChange, handleSubmit} = useForm(addItem, defaultValues);
     const itemsToShow = settings.itemsToShow;
     const [list, setList] = useState(() => {
         const savedList = localStorage.getItem('todoList');
@@ -49,50 +49,45 @@ const Todo = () => {
         setList(items);
     }
 
-    useEffect(() => {
-        const filteredList = hideCompleted ? list.filter(item => !item.complete) : list;
-        const totalPages = Math.ceil(filteredList.length / itemsToShow);
-
-        // Consider resetting currentPage to 1 if hideCompleted changes
-        if (hideCompleted && currentPage > totalPages) {
-            setCurrentPage(1);
-        }
-
-        setDisplayList(filteredList.slice((currentPage - 1) * itemsToShow, currentPage * itemsToShow));
-
-        setIncomplete(filteredList.filter(item => !item.complete).length);
-
-        localStorage.setItem('todoList', JSON.stringify(list));
-        localStorage.setItem('currentPage', JSON.stringify(currentPage));
-        document.title = `To Do List: ${incomplete}`;
-    }, [list, currentPage, itemsToShow, hideCompleted]);
-
-
-
-
-
-
     function handlePageChange(page) {
         setCurrentPage(page);
     }
 
+    useEffect(() => {
+        //hide completed... or display
+        const filteredList = hideCompleted ? list.filter(item => !item.complete) : list;
+        setDisplayList(filteredList.slice((currentPage - 1) * itemsToShow, currentPage * itemsToShow));
+
+        setIncomplete(filteredList.filter(item => !item.complete).length);
+
+        const totalPagesDynamic = Math.ceil(filteredList.length / itemsToShow);
+        // Consider resetting currentPage to 1 if hideCompleted changes, "overflow"
+        if (hideCompleted && currentPage > totalPagesDynamic) setCurrentPage(1);
+
+
+        localStorage.setItem('todoList', JSON.stringify(list));
+        localStorage.setItem('currentPage', JSON.stringify(currentPage));
+        document.title = `To Do List: ${incomplete}`;
+    }, [list, currentPage, hideCompleted]);
+
+
     return (
-        <Container size="xl" style={{ padding: '2rem' }}>
+        <Container size="xl" style={{padding: '2rem'}}>
             <p data-testid="todo-component">{incomplete}</p>
             <Group position="apart" align="flex-start">
                 <Auth capability={'create'}>
                     <Form handleChange={handleChange}
                           handleSubmit={handleSubmit}
-                          difficulty={defaultValues.difficulty} />
+                          difficulty={defaultValues.difficulty}/>
                 </Auth>
 
                 <TaskCard list={displayList}
                           toggleComplete={toggleComplete}
-                          deleteItem={deleteItem} />
+                          deleteItem={deleteItem}/>
             </Group>
 
             <Pagination
-                style={{ position: 'fixed', bottom: '20px', right: '20px', zIndex: '100' }}
+                style={{position: 'fixed', bottom: '20px', right: '20px', zIndex: '100'}}
                 total={Math.ceil(incomplete / itemsToShow)}
                 page={currentPage}
                 onChange={handlePageChange}

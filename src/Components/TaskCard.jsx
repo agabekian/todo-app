@@ -7,7 +7,7 @@ const TaskCard = (props) => {
     const settings = useContext(SettingsContext);
 
     return (
-        <div>
+        <div style={{minWidth:'50%'}}>
             {props.list.map(item => (
                 settings.hideCompleted && item.complete ? null :
                     <Card
