@@ -6,6 +6,7 @@ import { Container, Group, Pagination } from '@mantine/core';
 import '@mantine/core/styles.css';
 import Form from "../Form/Form.jsx";
 import TaskCard from "../TaskCard.jsx";
+import Auth from "../auth/auth.jsx";
 
 const Todo = () => {
     const settings = useContext(SettingsContext);
@@ -68,9 +69,11 @@ const Todo = () => {
         <Container size="xl" style={{ padding: '2rem' }}>
             <p data-testid="todo-component">{incomplete}</p>
             <Group position="apart" align="flex-start">
+                <Auth capability={'create'}>
                 <Form handleChange={handleChange}
                       handleSubmit={handleSubmit}
                       difficulty={defaultValues.difficulty} />
+                </Auth>
 
                 <TaskCard list={displayList}
                           toggleComplete={toggleComplete}

@@ -45,12 +45,14 @@ class LoginProvider extends React.Component {
   }
 
   login = async (username, password) => {
+    console.log("loggin", username)
     let { loggedIn, token, user } = this.state;
     let auth = testUsers[username];
     console.log("LOGGING FUNC,", auth)
     if (auth && auth.password === password) {
       try {
         this.validateToken(auth.token);
+        console.log(auth.token)
       } catch (e) {
         this.setLoginState(loggedIn, token, user, e);
         console.error(e);
@@ -69,7 +71,7 @@ class LoginProvider extends React.Component {
       this.setLoginState(true, token, validUser);
     } catch (e) {
       this.setLoginState(false, null, {}, e);
-      console.log('Token Validation Error', e);
+      console.log('Token Validation Error, supplied LOGIN?', e);
     }
   };
 
