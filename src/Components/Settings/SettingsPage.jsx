@@ -1,13 +1,12 @@
 import React, { useContext } from 'react';
 import { SettingsContext } from '/src/context/Settings.jsx';
-import { Container, Title, Group, Switch, NumberInput, Button, Text } from '@mantine/core';
+import { Container } from '@mantine/core';
 
 const SettingsPage = () => {
     const { hideCompleted, itemsToShow, setHideCompleted, setItemsToShow } = useContext(SettingsContext);
 
     const handleHideCompletedChange = () => {
         setHideCompleted((prev) => !prev);
-
     };
 
     const handleItemsToShowChange = (event) => {
@@ -26,10 +25,11 @@ const SettingsPage = () => {
                 <label>
                     Items to Show:
                     <select value={itemsToShow} onChange={handleItemsToShowChange}>
-                        <option value={5}>5</option>
-                        <option value={10}>10</option>
-                        <option value={15}>15</option>
-                        <option value={20}>20</option>
+                        {[...Array(20)].map((_, index) => (
+                            <option key={index + 1} value={index + 1}>
+                                {index + 1}
+                            </option>
+                        ))}
                     </select>
                 </label>
             </div>

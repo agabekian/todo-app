@@ -61,32 +61,7 @@ const Todo = () => {
         document.title = `To Do List: ${incomplete}`;
     }, [list, currentPage, itemsToShow, hideCompleted]);
 
-    useEffect(() => {
-        setHideCompleted(settings.hideCompleted);
-    }, [settings.hideCompleted]);
 
-    useEffect(() => {
-        // Filter the list based on hideCompleted setting
-        const filteredList = hideCompleted ? list.filter(item => !item.complete) : list;
-
-        // Calculate incomplete count
-        const incompleteCount = filteredList.filter(item => !item.complete).length;
-        setIncomplete(incompleteCount);
-
-        // Calculate total pages
-        const totalPages = Math.ceil(filteredList.length / itemsToShow);
-
-        // Update displayList with proper pagination
-        const startIndex = (currentPage - 1) * itemsToShow;
-        const endIndex = Math.min(startIndex + itemsToShow, filteredList.length);
-        const displayItems = filteredList.slice(startIndex, endIndex);
-        setDisplayList(displayItems);
-
-        // Update localStorage and document title
-        localStorage.setItem('todoList', JSON.stringify(list));
-        localStorage.setItem('currentPage', JSON.stringify(currentPage));
-        document.title = `To Do List: ${incomplete}`;
-    }, [list, currentPage, itemsToShow, hideCompleted]);
 
 
 
