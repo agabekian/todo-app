@@ -66,16 +66,29 @@ const Todo = () => {
     }, [settings.hideCompleted]);
 
     useEffect(() => {
-        // When hideCompleted setting changes, recalculate incomplete count and update display list
+        // Filter the list based on hideCompleted setting
         const filteredList = hideCompleted ? list.filter(item => !item.complete) : list;
-        setIncomplete(filteredList.filter(item => !item.complete).length);
 
+        // Calculate incomplete count
+        const incompleteCount = filteredList.filter(item => !item.complete).length;
+        setIncomplete(incompleteCount);
+
+        // Calculate total pages
         const totalPages = Math.ceil(filteredList.length / itemsToShow);
-        setDisplayList(filteredList.slice((currentPage - 1) * itemsToShow, currentPage * itemsToShow));
 
+        // Update displayList with proper pagination
+        const startIndex = (currentPage - 1) * itemsToShow;
+        const endIndex = Math.min(startIndex + itemsToShow, filteredList.length);
+        const displayItems = filteredList.slice(startIndex, endIndex);
+        setDisplayList(displayItems);
+
+        // Update localStorage and document title
         localStorage.setItem('todoList', JSON.stringify(list));
+        localStorage.setItem('currentPage', JSON.stringify(currentPage));
         document.title = `To Do List: ${incomplete}`;
     }, [list, currentPage, itemsToShow, hideCompleted]);
+
+
 
     function handlePageChange(page) {
         setCurrentPage(page);
@@ -101,7 +114,6 @@ const Todo = () => {
                 total={Math.ceil(incomplete / itemsToShow)}
                 page={currentPage}
                 onChange={handlePageChange}
-                withPagesCount
                 data-testid="pagination-component"
             />
         </Container>

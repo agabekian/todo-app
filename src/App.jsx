@@ -28,7 +28,7 @@ const AppContent = () => {
         </BrowserRouter>
     );
 };
-//refactored to display correctly Login Provide
+
 const App = () => {
     return (
         <LoginProvider>
