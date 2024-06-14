@@ -25,6 +25,7 @@ const Todo = () => {
         const savedPage = localStorage.getItem('currentPage');
         return savedPage ? JSON.parse(savedPage) : 1;
     });
+    const [hideCompleted, setHideCompleted] = useState(settings.hideCompleted);
 
     function addItem(item) {
         item.id = uuid();
@@ -49,30 +50,45 @@ const Todo = () => {
     }
 
     useEffect(() => {
-        let filteredList = list;
-        if (settings.hideCompleted) {
-            filteredList = list.filter(item => !item.complete);
-        }
+        const filteredList = hideCompleted ? list.filter(item => !item.complete) : list;
+        const totalPages = Math.ceil(filteredList.length / itemsToShow);
+        setDisplayList(filteredList.slice((currentPage - 1) * itemsToShow, currentPage * itemsToShow));
 
-        const incompleteCount = filteredList.filter(item => !item.complete).length;
-        setIncomplete(incompleteCount);
+        setIncomplete(filteredList.filter(item => !item.complete).length);
+
+        localStorage.setItem('todoList', JSON.stringify(list));
+        localStorage.setItem('currentPage', JSON.stringify(currentPage));
+        document.title = `To Do List: ${incomplete}`;
+    }, [list, currentPage, itemsToShow, hideCompleted]);
+
+    useEffect(() => {
+        setHideCompleted(settings.hideCompleted);
+    }, [settings.hideCompleted]);
+
+    useEffect(() => {
+        // When hideCompleted setting changes, recalculate incomplete count and update display list
+        const filteredList = hideCompleted ? list.filter(item => !item.complete) : list;
+        setIncomplete(filteredList.filter(item => !item.complete).length);
 
         const totalPages = Math.ceil(filteredList.length / itemsToShow);
         setDisplayList(filteredList.slice((currentPage - 1) * itemsToShow, currentPage * itemsToShow));
 
         localStorage.setItem('todoList', JSON.stringify(list));
-        localStorage.setItem('currentPage', JSON.stringify(currentPage));
         document.title = `To Do List: ${incomplete}`;
-    }, [list, currentPage, itemsToShow, settings.hideCompleted]);
+    }, [list, currentPage, itemsToShow, hideCompleted]);
+
+    function handlePageChange(page) {
+        setCurrentPage(page);
+    }
 
     return (
         <Container size="xl" style={{ padding: '2rem' }}>
             <p data-testid="todo-component">{incomplete}</p>
             <Group position="apart" align="flex-start">
                 <Auth capability={'create'}>
-                <Form handleChange={handleChange}
-                      handleSubmit={handleSubmit}
-                      difficulty={defaultValues.difficulty} />
+                    <Form handleChange={handleChange}
+                          handleSubmit={handleSubmit}
+                          difficulty={defaultValues.difficulty} />
                 </Auth>
 
                 <TaskCard list={displayList}
@@ -82,9 +98,10 @@ const Todo = () => {
 
             <Pagination
                 style={{ position: 'fixed', bottom: '20px', right: '20px', zIndex: '100' }}
-                total={Math.ceil(list.filter(item => !item.complete).length / itemsToShow)}
+                total={Math.ceil(incomplete / itemsToShow)}
                 page={currentPage}
-                onChange={setCurrentPage}
+                onChange={handlePageChange}
+                withPagesCount
                 data-testid="pagination-component"
             />
         </Container>
