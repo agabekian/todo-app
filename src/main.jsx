@@ -4,6 +4,7 @@ import SettingsProvider from './context/Settings.jsx';
 import { MantineProvider } from '@mantine/core';
 import App from './App';
 
+
 const root = createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
