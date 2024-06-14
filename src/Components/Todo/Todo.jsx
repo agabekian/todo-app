@@ -50,7 +50,9 @@ const Todo = () => {
     }
 
     useEffect(() => {
+        // Calculate filtered list based on hideCompleted state
         const filteredList = hideCompleted ? list.filter(item => !item.complete) : list;
+
         const totalPages = Math.ceil(filteredList.length / itemsToShow);
         setDisplayList(filteredList.slice((currentPage - 1) * itemsToShow, currentPage * itemsToShow));
 
@@ -60,6 +62,7 @@ const Todo = () => {
         localStorage.setItem('currentPage', JSON.stringify(currentPage));
         document.title = `To Do List: ${incomplete}`;
     }, [list, currentPage, itemsToShow, hideCompleted]);
+
 
 
 
@@ -94,5 +97,4 @@ const Todo = () => {
         </Container>
     );
 };
-
 export default Todo;
